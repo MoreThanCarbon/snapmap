@@ -204,5 +204,5 @@ var snapmap = snapmapSvr.listen(8080, function () {
   var host = snapmapSvr.settings.env; //server.address().address;
   var port = snapmap.address().port;
   console.log('Snapmap starting, making maps a snap...', host, port);
-  opn('http://localhost', {app: 'chrome'});
+  //opn('http://localhost', {app: 'chrome'});
 });
