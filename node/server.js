@@ -200,7 +200,7 @@ snapmapSvr.get('/db/maps/save/:degree', function(req, res) {
 // require('./pdfFormFill')(snapmapSvr); 
 
 // Listener
-var snapmap = snapmapSvr.listen(80, function () {
+var snapmap = snapmapSvr.listen(8080, function () {
   var host = snapmapSvr.settings.env; //server.address().address;
   var port = snapmap.address().port;
   console.log('Snapmap starting, making maps a snap...', host, port);
