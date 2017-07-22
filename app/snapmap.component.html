@@ -1,0 +1,127 @@
+<table id="header" style="width:100%;">
+    <thead>
+        <tr>
+            <th colspan="4" class="degree_header">
+                <span>Degree
+                    <img class="material-icons" src='/images/ic_refresh_white_36px.svg'
+                        *ngIf="viewTypeahead"
+                        width="36" height="36" (click)="newDegree()">
+                    <img class="material-icons" src='/images/ic_edit_white_36px.svg'
+                        *ngIf="viewTypeahead && degreeSel.id > -1"
+                        width="36" height="36" (click)="editDegree()">
+                    <img class="material-icons" src='/images/ic_save_white_36px.svg'
+                        *ngIf="!viewTypeahead || (degreeSel.id < 0 && degreeSel.name.length)"
+                        width="36" height="36" (click)="saveDegree()">
+                </span>
+                <typeahead class="degree_name" 
+                    [tabi]="nextTab(0,0,0,-2110)"
+                    [(ngModel)]="degreeSel.name" [isDisabled]="disableTypeahead" *ngIf="viewTypeahead"
+                    [list]="degrees"
+                    [searchProperty]="'name'" [displayProperty]="'name'"
+                    [maxSuggestions]="5"
+                    (suggestionSelected)="degreeSelected($event)">
+                </typeahead>
+                <input class="degree_name_edit" type="text" name="" *ngIf="!viewTypeahead" 
+                    [(ngModel)]="degreeSel.name">
+                <span>Units</span>
+                <input class="degree_units" type="text" name=""  
+                    tabindex="{{nextTab(0,0,0,-2100)}}" 
+                    [disabled]="disableTypeahead || !(!viewTypeahead || (degreeSel.id < 0 && degreeSel.name.length))"
+                    [(ngModel)]="degreeSel.units_req">
+            </th>
+        </tr>
+        <tr *ngIf="degreeSel.id > -1">
+            <th width="25%">
+                <div class="totalLbl">
+                    <img class="material-icons" src='/images/ic_print_white_24px.svg' 
+                        width="24" height="24" (click)="print(0)">
+                    FT (below)
+                </div>
+                <input class="units" type="text" name="" disabled="disabled"
+                    [(ngModel)]="degree.maps[0].units">
+            </th>
+            <th width="25%">
+                <div class="totalLbl">
+                    <img class="material-icons" src='/images/ic_print_white_24px.svg' 
+                        width="24" height="24" (click)="print(1)">
+                    PT (below)
+                </div>
+                <input class="units" type="text" name="" disabled="disabled"
+                    [(ngModel)]="degree.maps[1].units">
+            </th>
+            <th width="25%">
+                <div class="totalLbl">
+                    <img class="material-icons" src='/images/ic_print_white_24px.svg' 
+                        width="24" height="24" (click)="print(2)">
+                    FT (college)
+                </div>
+                <input class="units" type="text" name="" disabled="disabled"
+                    [(ngModel)]="degree.maps[2].units">
+            </th>
+            <th width="25%">
+                <div class="totalLbl">
+                    <img class="material-icons" src='/images/ic_print_white_24px.svg' 
+                        width="24" height="24" (click)="print(3)">
+                    PT (college)
+                </div>
+                <input class="units" type="text" name="" disabled="disabled"
+                    [(ngModel)]="degree.maps[3].units">
+            </th>
+        </tr>
+    </thead>
+</table>    
+<table id="body" style="width:100%;" *ngIf="degreeSel.id > -1">
+    <tbody>
+        <ng-template ngFor let-term [ngForOf]="[0,1,2,3,4,5,6,7,8,9,10,11,12,13]">
+        <tr>
+            <td colspan="4" class="terms">Term {{term+1}}</td>
+        </tr>
+        <tr>
+            <td *ngFor="let map of [0,1,2,3];" [ngClass]='"col"+ (map+1)'>
+                <div class="course">Course</div>
+                <div class="units">Units</div>
+                <div class="milestone">MS</div>
+            </td>
+        </tr>
+        <tr *ngFor="let course of [0,1,2,3,4,5];">
+            <td class="courses"
+                *ngFor="let map of [0,1,2,3];" 
+                [ngClass]='"col"+ (map+1)'
+                dnd-droppable 
+                    [dropZones]="['courses']" 
+                    (onDropSuccess)="onDrop([ map, term, course ], $event.dragData)">
+                <div class="courseType">
+                    <img class="material-icons" src='/images/ic_class_black_24px.svg' width="12" height="24"
+                        dnd-draggable 
+                            [dragEnabled]="true" 
+                            [dropZones]="['courses']" 
+                            [dragData]="[ map, term, course ]">
+                    <typeahead class="ta" 
+                        [tabi]="nextTab(map, term, course, 0)"
+                        [(ngModel)]="degree.maps[map].terms[term].courses[course].name"
+                        [list]="courses"
+                        [searchProperty]="'name'" [displayProperty]="'name'"
+                        [maxSuggestions]="5"
+                        (suggestionSelected)="courseSelected([ map, term, course ], $event)">
+                    </typeahead>
+                </div>
+                <input class="units" type="text" name="" tabindex="{{nextTab(map, term, course, 1)}}" 
+                    (change)="unitsChange(map)" (keyup)="unitsChange(map)"
+                    [(ngModel)]="degree.maps[map].terms[term].courses[course].units">
+                <label>
+                    <input class="milestone" type="checkbox" name="" tabindex="{{nextTab(map, term, course, 2)}}"
+                        [(ngModel)]="degree.maps[map].terms[term].courses[course].milestone">
+                    <span class="checkable"></span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td *ngFor="let map of [0,1,2,3];" [ngClass]='"col"+ (map+1)'>
+                <div class="totalLbl">Total Units</div>
+                <input class="units" type="text" name="" disabled="disabled"
+                    [(ngModel)]="degree.maps[map].terms[term].units">
+            </td>
+        </tr>
+        </ng-template>
+    </tbody>
+</table>
