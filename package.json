@@ -34,4 +34,3 @@
   "license": "ISC",
   "keywords": []
 }
-//npm i sqlite3 --target_arch=ia32 --runtime=node --target=5.7.0 --target_platform=win32 --save
